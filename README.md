@@ -34,9 +34,13 @@ GOOS=aix GOARCH=ppc64 go build ./cmd/cdcfilter
 
 #### ENV variables 
 `GTMCDC_KAFKA_BROKERS`: kafka brokers list
+
 `GTMCDC_KAFKA_TOPIC`: kafka topic
+
 `GTMCDC_PROM_HTTP_ADDR`
+
 `GTMCDC_LOG`: CDC process log file directory, defaults to `cdcfilter.log`
+
 `GTMCDC_LOG_LEVEL`:  CDC process log level, defaults to `debug`
 
 available logging level: 
