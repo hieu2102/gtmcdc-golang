@@ -1,6 +1,7 @@
 package gtmcdc
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -40,10 +41,10 @@ func Test_Horolog2UnixTime(t *testing.T) {
 }
 
 func Test_Parse_JournalRecord_1(t *testing.T) {
-	rec, _ := Parse(`05\65282,59700\28\0\0\28\0\0\0\0\^acc("00027")="300.00"`)
-	// fmt.Println(rec)
-	assert.Equal(t, "SET", rec.opcode)
-	assert.Equal(t, "300.00", rec.detail.value)
+	rec, _ := Parse(`04\0,0\78393877654\0\0\58808538812\0\0\0\0\^ZATFAMTBYPCT"`)
+	fmt.Println(rec)
+	// assert.Equal(t, "SET", rec.opcode)
+	// assert.Equal(t, "300.00", rec.detail.value)
 
 	// record is too short
 	_, err := Parse(`05\65282,59700\28`)
@@ -83,36 +84,4 @@ func Test_atli(t *testing.T) {
 
 	i = atoi("xx")
 	assert.Equal(t, 0, i)
-}
-
-func Test_parseNodeFlags(t *testing.T) {
-	r, err := parseNodeFlags("^ACN(5877000047,51)")
-	assert.Nil(t, err)
-	assert.Equal(t, 3, len(r))
-	assert.Equal(t, "ACN", r[0])
-	assert.Equal(t, "5877000047", r[1])
-	assert.Equal(t, "51", r[2])
-
-	r, err = parseNodeFlags("^ACN(5877000047)")
-	assert.Nil(t, err)
-	assert.Equal(t, 2, len(r))
-	assert.Equal(t, "ACN", r[0])
-	assert.Equal(t, "5877000047", r[1])
-
-	r, err = parseNodeFlags("^acn(5877000047,51,1245)")
-	assert.Nil(t, err)
-	assert.Equal(t, 4, len(r))
-	assert.Equal(t, "ACN", r[0])
-	assert.Equal(t, "5877000047", r[1])
-	assert.Equal(t, "51", r[2])
-	assert.Equal(t, "1245", r[3])
-
-	_, err = parseNodeFlags("^ACN()")
-	assert.NotNil(t, err)
-
-	_, err = parseNodeFlags("garbage")
-	assert.NotNil(t, err)
-
-	_, err = parseNodeFlags("")
-	assert.NotNil(t, err)
 }

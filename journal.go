@@ -207,7 +207,7 @@ func (rec *JournalRecord) JSON() (string, error) {
 	var err error
 	switch rec.opcode {
 	case "SET", "KILL", "ZKILL", "ZTRIG":
-		r, err = parseNodeFlags(rec.detail.nodeFlags)
+		r, err = parseNodeFlags(rec.opcode, rec.detail.nodeFlags)
 		if err != nil {
 			return "", errors.New("unable to parse")
 		}
@@ -288,11 +288,15 @@ func Horolog2Timestamp(horolog string) (int64, error) {
 	return int64(seconds), nil
 }
 
-func parseNodeFlags(node string) ([]string, error) {
+func parseNodeFlags(opCode string, node string) ([]string, error) {
 	var nodeRegex *regexp.Regexp
 	func() {
 		if nodeRegex == nil {
-			nodeRegex = regexp.MustCompile(`\^(?P<global>.*?)\((?P<index>.+)\)`)
+			if opCode != "KILL" {
+				nodeRegex = regexp.MustCompile(`\^(?P<global>.*?)\((?P<index>.+)\)`)
+			} else {
+				nodeRegex = regexp.MustCompile(`\^(?P<global>.*?)\(?(?P<index>.+)\)?`)
+			}
 		}
 	}()
 

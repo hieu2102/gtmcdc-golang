@@ -13,5 +13,6 @@ require (
 	github.com/prometheus/common v0.6.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.4.0
+	golang.org/x/sys v0.0.0-20220928140112-f11e5e49a4ec // indirect
 	gopkg.in/jcmturner/goidentity.v3 v3.0.0 // indirect
 )
