@@ -195,7 +195,7 @@ func Parse(raw string) (*JournalRecord, error) {
 		logf.Debugf("journal entry ignored. %s", rec.opcode)
 
 	default:
-		logf.Info("unknown journal entry")
+		logf.Errorf("unknown journal entry %s", raw)
 	}
 
 	return &rec, nil

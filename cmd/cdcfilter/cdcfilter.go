@@ -29,7 +29,7 @@ func main() {
 
 	producer, err := pkg.InitProducer(conf.KafkaBrokerList, conf.KafkaTopic)
 	if err != nil {
-		log.Infof("Kafka producer not available. %v", err)
+		log.Errorf("Kafka producer not available. %v", err)
 	}
 	defer producer.CleanupProducer()
 

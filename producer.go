@@ -31,7 +31,7 @@ func (p *Producer) PublishMessage(message string) error {
 	})
 
 	if err != nil {
-		log.Info("Unable to publish message")
+		log.Errorf("Unable to publish message %s", message)
 		return err
 	}
 
