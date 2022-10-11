@@ -51,7 +51,7 @@ func DoFilter(fin, fout *os.File, producer *Producer, metrics *Metrics) {
 		metrics.IncrCounter("lines_read_from_input")
 
 		// log with fields
-		logf := log.WithField("journal", line)
+		logf := log.WithFields(log.Fields{"journal": line, "func": "Filter.DoFilter"})
 
 		rec, err := Parse(line)
 		if err != nil {

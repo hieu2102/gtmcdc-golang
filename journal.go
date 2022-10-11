@@ -133,7 +133,7 @@ func OpCode(numeric string) string {
 // LGTRIG  = "13"\time\tnum\pid\clntpid\token_seq\strm_num\strm_seq\updnum\trigdefinition
 func Parse(raw string) (*JournalRecord, error) {
 	// log with fields
-	logf := log.WithFields(log.Fields{"journal": raw, "func": "Parse"})
+	logf := log.WithFields(log.Fields{"journal": raw, "func": "Journal.Parse"})
 	if !strings.Contains(raw, "^") {
 		logf.Debugf("raw record does not contains '^' character, skipping")
 		return &JournalRecord{}, nil
@@ -211,7 +211,7 @@ func Parse(raw string) (*JournalRecord, error) {
 
 // JSON representation of a journal log entry
 func (rec *JournalRecord) JSON() (string, error) {
-	logf := log.WithFields(log.Fields{"record": rec.detail.nodeFlags})
+	logf := log.WithFields(log.Fields{"record": rec.detail.nodeFlags, "func": "Journal.JSON"})
 	logf.Debug("convert record to JSON")
 	var r []string
 	var err error
@@ -299,7 +299,7 @@ func Horolog2Timestamp(horolog string) (int64, error) {
 }
 
 func parseNodeFlags(opCode string, node string) ([]string, error) {
-	logf := log.WithFields(log.Fields{"nodeFlags": node})
+	logf := log.WithFields(log.Fields{"nodeFlags": node, "func": "Journal.parseNodeFlags"})
 	logf.Debugf("opCode: %s", opCode)
 	var nodeRegex *regexp.Regexp
 	func() {

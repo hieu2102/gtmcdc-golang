@@ -1,2 +1,0 @@
-change -segment DEFAULT -file_name=$PWD/$gtm_repl_instname/gtm.dat
-exit
