@@ -55,15 +55,15 @@ func DoFilter(fin, fout *os.File, producer *Producer, metrics *Metrics) {
 
 		rec, err := Parse(line)
 		if err != nil {
-			logf.Error("Unable to parse record")
+			logf.Errorf("Unable to parse record")
 			metrics.IncrCounter("lines_parse_error")
+			continue
 		} else {
 			metrics.IncrCounter("lines_parsed")
 
 			jsonstr, err := rec.JSON()
 			if err != nil {
 				logf.Fatalf("cannot marshal to JSON due to %+v", err)
-				continue
 			}
 
 			logf.Debugf("line parsed to json %s", jsonstr)

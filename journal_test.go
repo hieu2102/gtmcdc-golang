@@ -51,6 +51,10 @@ func Test_Parse_JournalRecord_1(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
+func Test_Parse_NodeFlags(t *testing.T) {
+	rec, _ := parseNodeFlags("SET", "^MSGLOG(\"))bCC#)(3\")")
+	fmt.Println(rec[1])
+}
 func Test_Parse_JournalRecord_2(t *testing.T) {
 	rec, _ := Parse(`08\65287,62154\3\0\0\3\0\0`)
 	assert.Equal(t, "TSTART", rec.opcode)

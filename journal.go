@@ -133,13 +133,20 @@ func OpCode(numeric string) string {
 // LGTRIG  = "13"\time\tnum\pid\clntpid\token_seq\strm_num\strm_seq\updnum\trigdefinition
 func Parse(raw string) (*JournalRecord, error) {
 	// log with fields
-	logf := log.WithFields(log.Fields{"journal": raw})
+	logf := log.WithFields(log.Fields{"journal": raw, "func": "Parse"})
+	if !strings.Contains(raw, "^") {
+		logf.Debugf("raw record does not contains '^' character, skipping")
+		return &JournalRecord{}, nil
+	}
+	metadataAndTransaction := strings.SplitN(raw, "^", 2)
+	logf.Debugf("splitted journal string: %s", metadataAndTransaction)
 
-	s := strings.Split(raw, "\\")
+	s := strings.Split(metadataAndTransaction[0], "\\")
+	s = append(s, "^"+metadataAndTransaction[1])
+	logf.Debugf("splitted journal string: %s", s)
 	if len(s) < 5 {
 		return nil, errors.New(ErrorInvalidRecord)
 	}
-
 	ts, err := Horolog2Timestamp(s[1])
 	if err != nil {
 		return nil, err
@@ -173,6 +180,7 @@ func Parse(raw string) (*JournalRecord, error) {
 
 		s2 := strings.Split(s[len(s)-1], "=")
 		rec.detail.nodeFlags = s2[0]
+		logf.Debugf("unprocessed node flags: %s; raw string: %s", s2, s)
 		if len(s2) > 1 {
 			val := s2[1]
 			// remove leading and end double quote characters
@@ -203,13 +211,15 @@ func Parse(raw string) (*JournalRecord, error) {
 
 // JSON representation of a journal log entry
 func (rec *JournalRecord) JSON() (string, error) {
+	logf := log.WithFields(log.Fields{"record": rec.detail.nodeFlags})
+	logf.Debug("convert record to JSON")
 	var r []string
 	var err error
 	switch rec.opcode {
 	case "SET", "KILL", "ZKILL", "ZTRIG":
 		r, err = parseNodeFlags(rec.opcode, rec.detail.nodeFlags)
 		if err != nil {
-			return "", errors.New("unable to parse")
+			return "", errors.New("unable to parse node flags")
 		}
 	default:
 		// for other type of operands the node flags are all empty
@@ -289,6 +299,8 @@ func Horolog2Timestamp(horolog string) (int64, error) {
 }
 
 func parseNodeFlags(opCode string, node string) ([]string, error) {
+	logf := log.WithFields(log.Fields{"nodeFlags": node})
+	logf.Debugf("opCode: %s", opCode)
 	var nodeRegex *regexp.Regexp
 	func() {
 		if nodeRegex == nil {
